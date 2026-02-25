@@ -7,7 +7,6 @@ const { EventEmitter } = require("events");
 const { kPackageRoot } = require("../../lib/server/constants");
 const modulePath = require.resolve("../../lib/server/alphaclaw-version");
 const originalExec = childProcess.exec;
-const originalSpawn = childProcess.spawn;
 const originalHttpsGet = https.get;
 
 const createMockHttpsGet = (responseJson) => {
@@ -25,9 +24,8 @@ const createMockHttpsGet = (responseJson) => {
   });
 };
 
-const loadVersionModule = ({ execMock, spawnMock, httpsGetMock } = {}) => {
+const loadVersionModule = ({ execMock, httpsGetMock } = {}) => {
   if (execMock) childProcess.exec = execMock;
-  if (spawnMock) childProcess.spawn = spawnMock;
   if (httpsGetMock) https.get = httpsGetMock;
   delete require.cache[modulePath];
   return require(modulePath);
@@ -36,7 +34,6 @@ const loadVersionModule = ({ execMock, spawnMock, httpsGetMock } = {}) => {
 describe("server/alphaclaw-version", () => {
   afterEach(() => {
     childProcess.exec = originalExec;
-    childProcess.spawn = originalSpawn;
     https.get = originalHttpsGet;
     delete require.cache[modulePath];
   });
@@ -78,10 +75,7 @@ describe("server/alphaclaw-version", () => {
     const execMock = vi.fn().mockImplementation((cmd, opts, callback) => {
       installCallback = callback;
     });
-    const spawnMock = vi.fn().mockReturnValue({
-      unref: vi.fn(),
-    });
-    const { createAlphaclawVersionService } = loadVersionModule({ execMock, spawnMock });
+    const { createAlphaclawVersionService } = loadVersionModule({ execMock });
     const service = createAlphaclawVersionService();
 
     const firstPromise = service.updateAlphaclaw();
@@ -102,8 +96,7 @@ describe("server/alphaclaw-version", () => {
     const execMock = vi.fn().mockImplementation((cmd, opts, callback) => {
       callback(null, "added 1 package", "");
     });
-    const spawnMock = vi.fn().mockReturnValue({ unref: vi.fn() });
-    const { createAlphaclawVersionService } = loadVersionModule({ execMock, spawnMock });
+    const { createAlphaclawVersionService } = loadVersionModule({ execMock });
     const service = createAlphaclawVersionService();
 
     const result = await service.updateAlphaclaw();
