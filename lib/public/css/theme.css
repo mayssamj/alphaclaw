@@ -48,6 +48,53 @@ body::before {
   color: var(--text-muted);
 }
 
+/* Shared collapsible history rows (incidents, webhook requests). */
+.ac-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ac-history-item {
+  border: 1px solid var(--panel-border-contrast);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.ac-history-summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 8px 10px;
+  color: #d1d5db;
+}
+
+.ac-history-summary::-webkit-details-marker {
+  display: none;
+}
+
+.ac-history-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ac-history-toggle {
+  color: var(--text-muted);
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.ac-history-item[open] .ac-history-toggle {
+  transform: rotate(90deg);
+  color: #d1d5db;
+}
+
+.ac-history-body {
+  margin: 4px 10px 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--panel-border-contrast);
+}
+
 /* Unified panel treatment across tabs/pages. */
 .bg-surface {
   background: var(--panel-bg-contrast) !important;
